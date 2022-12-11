@@ -14,7 +14,7 @@ namespace Minimal.Api.Context
             _config = config;
         }
 
-        public DbSet<Costumer> Costumers { get; set; }
+        public DbSet<Customer> Customers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

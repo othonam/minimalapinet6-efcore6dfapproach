@@ -1,16 +1,16 @@
 using Minimal.Api.DTOs;
-using Minimal.Api.Entities.Mappings;
+using Minimal.Api.Entities.Contracts;
 
 namespace Minimal.Test
 {
-    public class CostumerTests
+    public class CustomerTests
     {
         [Fact]
-        public void Costumer_Contract_Success_1()
+        public void Customer_Contract_Success_1()
         {
-            var contract = new CostumerContract();
+            var contract = new CustomerContract();
 
-            contract.MapTo(new CostumerPost
+            contract.MapToEntity(new CustomerPost
             {
                 FirstName = "Bilbo",
                 LastName = "Baggins"
@@ -20,11 +20,11 @@ namespace Minimal.Test
         }
 
         [Fact]
-        public void Costumer_Contract_Success_2()
+        public void Customer_Contract_Success_2()
         {
-            var contract = new CostumerContract();
+            var contract = new CustomerContract();
 
-            contract.MapTo(new CostumerPost
+            contract.MapToEntity(new CustomerPost
             {
                 FirstName = "Gandalf",
                 LastName = "The Gray"
@@ -34,11 +34,11 @@ namespace Minimal.Test
         }
 
         [Fact]
-        public void Costumer_Contract_Success_3()
+        public void Customer_Contract_Success_3()
         {
-            var contract = new CostumerContract();
+            var contract = new CustomerContract();
 
-            contract.MapTo(new CostumerPost
+            contract.MapToEntity(new CustomerPost
             {
                 FirstName = "Arthas",
                 LastName = "Menethil"
@@ -48,11 +48,11 @@ namespace Minimal.Test
         }
 
         [Fact]
-        public void Costumer_Contract_Failure_1()
+        public void Customer_Contract_Failure_1()
         {
-            var contract = new CostumerContract();
+            var contract = new CustomerContract();
 
-            contract.MapTo(new CostumerPost
+            contract.MapToEntity(new CustomerPost
             {
                 FirstName = "TestingStringOverflowTestingStringOverflow",
                 LastName = "TestingStringOverflowTestingStringOverflowTestingStringOverflow"
@@ -62,11 +62,11 @@ namespace Minimal.Test
         }
 
         [Fact]
-        public void Costumer_Contract_Failure_2()
+        public void Customer_Contract_Failure_2()
         {
-            var contract = new CostumerContract();
+            var contract = new CustomerContract();
 
-            contract.MapTo(new CostumerPost
+            contract.MapToEntity(new CustomerPost
             {
                 FirstName = null,
                 LastName = null
@@ -76,11 +76,11 @@ namespace Minimal.Test
         }
 
         [Fact]
-        public void Costumer_Contract_Failure_3()
+        public void Customer_Contract_Failure_3()
         {
-            var contract = new CostumerContract();
+            var contract = new CustomerContract();
 
-            contract.MapTo(new CostumerPost
+            contract.MapToEntity(new CustomerPost
             {
                 FirstName = string.Empty,
                 LastName = string.Empty

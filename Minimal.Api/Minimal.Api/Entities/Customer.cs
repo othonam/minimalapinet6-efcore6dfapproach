@@ -1,6 +1,6 @@
 ﻿namespace Minimal.Api.Entities
 {
-    public class Costumer
+    public class Customer
     {
         public Guid Id { get; set; }
 

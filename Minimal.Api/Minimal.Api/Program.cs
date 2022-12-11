@@ -1,11 +1,12 @@
 using Flunt.Notifications;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Minimal.Api.Configurations;
 using Minimal.Api.Context;
 using Minimal.Api.DTOs;
 using Minimal.Api.Entities;
-using Minimal.Api.Entities.Mappings;
+using Minimal.Api.Entities.Contracts;
 using Swashbuckle.AspNetCore.Annotations;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,43 +22,43 @@ builder.Services.AddDbContext<AppDbContext>();
 
 builder.Services.AddSingleton<IConfig, Config>();
 
-builder.Services.AddTransient<CostumerContract>();
+builder.Services.AddTransient<CustomerContract>();
 
 var app = builder.Build();
 
-app.MapPost("/costumers", async (
-    [FromBody] CostumerPost post,
+app.MapPost("/Customers", async (
+    [FromBody] CustomerPost post,
     AppDbContext _dbContext,
-    CostumerContract _contract) =>
+    CustomerContract _contract) =>
 {
-    var costumer = _contract.MapTo(post);
+    _contract.MapToEntity(post);
 
     if (!_contract.IsValid)
         return Results.BadRequest(_contract.Notifications);
 
-    await _dbContext.Costumers.AddAsync(costumer);
+    await _dbContext.Customers.AddAsync(_contract.Entity);
     await _dbContext.SaveChangesAsync();
 
-    return Results.CreatedAtRoute($"PostCostumer", null);
+    return Results.CreatedAtRoute($"PostCustomer", null);
 })
     .Produces(StatusCodes.Status201Created)
     .Produces(StatusCodes.Status400BadRequest)
     .Produces(StatusCodes.Status500InternalServerError, typeof(string))
-    .WithName("PostCostumer")
-    .WithTags("Costumer")
-    .WithMetadata(new SwaggerOperationAttribute(summary: "Store", description: "This method store a Costumer Entity"));
+    .WithName("PostCustomer")
+    .WithTags("Customer")
+    .WithMetadata(new SwaggerOperationAttribute(summary: "Store", description: "This method store a Customer Entity"));
 
-app.MapPut("/costumers", async (
-    [FromBody] CostumerPut put,
+app.MapPut("/Customers", async (
+    [FromBody] CustomerPut put,
     AppDbContext _dbContext,
-    CostumerContract _contract) =>
+    CustomerContract _contract) =>
 {
-    var costumer = _contract.MapTo(put);
+    _contract.MapToEntity(put);
 
     if (!_contract.IsValid)
         return Results.BadRequest(_contract.Notifications);
 
-    _dbContext.Costumers.Update(costumer);
+    _dbContext.Customers.Update(_contract.Entity);
     await _dbContext.SaveChangesAsync();
 
     return Results.Ok();
@@ -65,18 +66,18 @@ app.MapPut("/costumers", async (
 .Produces(StatusCodes.Status200OK)
 .Produces(StatusCodes.Status400BadRequest, typeof(IReadOnlyCollection<Notification>))
 .Produces(StatusCodes.Status500InternalServerError, typeof(string))
-.WithName("UpdateCostumers")
-.WithTags("Costumer")
+.WithName("UpdateCustomers")
+.WithTags("Customer")
 .WithMetadata(new SwaggerOperationAttribute(
     summary: "Update", 
-    description: "This method update a Costumer Entity"));
+    description: "This method update a Customer Entity"));
 
-app.MapDelete("/costumers/{id}", async (
+app.MapDelete("/Customers/{id}", async (
     [FromRoute] Guid id,
     AppDbContext _dbContext,
-    CostumerContract _contract) =>
+    CustomerContract _contract) =>
 {
-    _dbContext.Costumers.Remove(new Costumer { Id = id });
+    _dbContext.Customers.Remove(new Customer { Id = id });
     await _dbContext.SaveChangesAsync();
 
     return Results.Ok();
@@ -84,37 +85,37 @@ app.MapDelete("/costumers/{id}", async (
 .Produces(StatusCodes.Status200OK)
 .Produces(StatusCodes.Status400BadRequest, typeof(IReadOnlyCollection<Notification>))
 .Produces(StatusCodes.Status500InternalServerError, typeof(string))
-.WithName("DeleteCostumers")
-.WithTags("Costumer")
+.WithName("DeleteCustomers")
+.WithTags("Customer")
 .WithMetadata(new SwaggerOperationAttribute(
     summary: "Delete", 
-    description: "This method delete a Costumer Entity"));
+    description: "This method delete a Customer Entity"));
 
-app.MapGet("/costumers/{id}", async (
+app.MapGet("/Customers/{id}", async (
     [FromRoute] Guid id,
     AppDbContext _dbContext) =>
 {
     return Results.Ok(
-        await _dbContext.Costumers.FirstOrDefaultAsync(c => c.Id.Equals(id)));
+        await _dbContext.Customers.FirstOrDefaultAsync(c => c.Id.Equals(id)));
 })
-.Produces(StatusCodes.Status200OK, typeof(Costumer))
+.Produces(StatusCodes.Status200OK, typeof(Customer))
 .Produces(StatusCodes.Status400BadRequest, typeof(IReadOnlyCollection<Notification>))
 .Produces(StatusCodes.Status500InternalServerError, typeof(string))
-.WithName("GetCostumer")
-.WithTags("Costumer")
-.WithMetadata(new SwaggerOperationAttribute(summary: "Retrieve", description: "This method retrieve a list of Costumer Entity"));
+.WithName("GetCustomer")
+.WithTags("Customer")
+.WithMetadata(new SwaggerOperationAttribute(summary: "Retrieve", description: "This method retrieve a list of Customer Entity"));
 
 
-app.MapGet("/costumers", async (AppDbContext _dbContext) =>
+app.MapGet("/Customers", async (AppDbContext _dbContext) =>
 {
-    return Results.Ok(await _dbContext.Costumers.ToListAsync());
+    return Results.Ok(await _dbContext.Customers.ToListAsync());
 })
-.Produces(StatusCodes.Status200OK, typeof(IEnumerable<Costumer>))
+.Produces(StatusCodes.Status200OK, typeof(IEnumerable<Customer>))
 .Produces(StatusCodes.Status400BadRequest, typeof(IReadOnlyCollection<Notification>))
 .Produces(StatusCodes.Status500InternalServerError, typeof(string))
-.WithName("GetAllCostumers")
-.WithTags("Costumer")
-.WithMetadata(new SwaggerOperationAttribute(summary: "Retrieve All", description: "This method retrieve a list of Costumer Entity"));
+.WithName("GetAllCustomers")
+.WithTags("Customer")
+.WithMetadata(new SwaggerOperationAttribute(summary: "Retrieve All", description: "This method retrieve a list of Customer Entity"));
 
 if (app.Environment.IsDevelopment())
 {
